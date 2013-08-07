@@ -13,7 +13,8 @@ function GetFuelSlots()
 	return nil
 end
 
-function GetFirstComponentSlot()
+function GetFirstComponentSlot(reactorName)
+	local reactor = peripheral.wrap(reactorName)
 	local count = reactor.getInventorySize()
 	local x = 0
 	
@@ -31,7 +32,8 @@ function GetFirstComponentSlot()
 	end
 end
 
-function GetFirstComponent()
+function GetFirstComponent(reactorName)
+	local reactor = peripheral.wrap(reactorName)
 	local count = reactor.getInventorySize()
 	local item = nil
 

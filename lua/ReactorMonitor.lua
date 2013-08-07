@@ -27,10 +27,10 @@ term.clear()
 BuildDeviceList()
 ResetDisplays()
 
-if reactor == nil then
+if #attached["reactors"] == 0 then
 	DisplayInfo("Reactor: [!] MISSING [!]")
 else
-	local slot = GetFirstComponentSlot()
+	local slot = GetFirstComponentSlot(attached["reactors"][1])
 	if slot == nil then
 	   DisplayInfo("Reactor: [!] EMPTY [!]")
 	else
@@ -38,16 +38,16 @@ else
 	end
 end
 
-if storage == nil then
+if #attached["storage"] == 0 then
 	DisplayInfo("ME Interface: [!] MISSING [!]")
 else
 	DisplayInfo("ME Interface: Ok")
 end
 
-DisplayInfo("Batteries: " .. #batteries)
-DisplayInfo("Monitors: " .. #monitors)
-DisplayInfo("Bridges: " .. #bridges)
-DisplayInfo("Control Wires: " .. #redwires)
+DisplayInfo("Batteries: " .. #attached["batteries"])
+DisplayInfo("Monitors: " .. #attached["monitors"])
+DisplayInfo("Bridges: " .. #attached["bridges"])
+DisplayInfo("Control Wires: " .. #attached["redwires"])
 
 STATUS_OUTPUT = 1
 STATUS_TEMP = 2
@@ -68,6 +68,7 @@ function main()
 	repeat
 		if terminate then
 			RedstoneOutput(false)
+			RedbundleOutput(colors.black, false)
 			ResetDisplays()
 
 			DisplayInfo("-- Monitor Offline --",1)
@@ -87,13 +88,15 @@ function main()
 			disconnected = false
 		end
 
-		if (reactor == nil) or (not reactor.isActive()) then
+		if (#attached["reactors"] == 0) then
 			disconnected = true
 
 		   RedstoneOutput(false)
+			RedbundleOutput(colors.black, false)
 		   ResetDisplays()
 			DisplayInfo("-- Reactor Offline --")
 		else
+		   reactor = peripheral.wrap(attached["reactors"][1])
 			curOutput = reactor.getEUOutput()
 			maxOutput = reactor.getMaxEUOutput()
 
@@ -142,13 +145,16 @@ function main()
 		   if overheat == true then
 				IndicatorUpdate("Status",STATUS_WARNING)
 				RedstoneOutput(false)
+				RedbundleOutput(colors.black, false)
 			else
 				if curEU/maxEU >= 1 then
 					IndicatorUpdate("Status",STATUS_OFF)
 					RedstoneOutput(false)
-				elseif curEU/maxEU <= 0.5 then
+					RedbundleOutput(colors.black, false)
+			elseif curEU/maxEU <= 0.5 then
 					IndicatorUpdate("Status",STATUS_OK)
 					RedstoneOutput(true)
+					RedbundleOutput(colors.black, true)
 				end
 			end
 		end

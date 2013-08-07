@@ -1,25 +1,25 @@
-bridges = {}
-bridgeText = {}
-monitors = {}
-batteries = {}
-redwires = {}
-redbundles = {}
-reactor = nil
-storage = nil
+attached["bridges"] = {}
+attached["monitors"] = {}
+attached["batteries"] = {}
+attached["redwires"] = {}
+attached["redbundles"] = {}
+attached["reactors"] = {}
+attached["storage"] = {}
 
 displayLine = 0
 
+bridgeText = {}
 meters = {}
 indicators = {}
 
 function ClearDeviceList()
-	bridges = {}
-	monitors = {}
-	batteries = {}
-	redwires = {}
-	redbundles = {}
-	reactor = nil
-	storage = nil
+	attached["bridges"] = {}
+	attached["monitors"] = {}
+	attached["batteries"] = {}
+	attached["redwires"] = {}
+	attached["redbundles"] = {}
+	attached["reactors"] = {}
+	attached["storage"] = {}
 
 	displayLine = 0
 
@@ -42,12 +42,12 @@ function BuildDeviceList()
 end
 
 function AddDevice(name)
-	type = peripheral.getType(name)
+	pType = peripheral.getType(name)
 	local exists = false
 
-	if type == "monitor" then
-		for x=1,#monitors,1 do
-		   item = monitors[x]
+	if pType == "monitor" then
+		for x=1,#attached["monitors"],1 do
+		   item = attached["monitors"][x]
 		   if item == name then
 				exists = true
 				break
@@ -55,11 +55,11 @@ function AddDevice(name)
 		end
 		
 		if not exists then
-			monitors[#monitors + 1] = name
+			table.insert(attached["monitors"],name)
 		end
-	elseif type == "glassesbridge" then
-		for x=1,#bridges,1 do
-		   item = bridges[x]
+	elseif pType == "glassesbridge" then
+		for x=1,#attached["bridges"],1 do
+		   item = attached["bridges"][x]
 		   if item == name then
 				exists = true
 				break
@@ -67,11 +67,11 @@ function AddDevice(name)
 		end
 		
 		if not exists then
-			bridges[#bridges + 1] = name
+			table.insert(attached["bridges"],name)
 		end
-	elseif type == "immibis_redlogic_wire_bundled" then
-		for x=1,#redbundles,1 do
-		   item = redbundles[x]
+	elseif pType == "immibis_redlogic_wire_bundled" then
+		for x=1,#attached["redbundles"],1 do
+		   item = attached["redbundles"][x]
 		   if item == name then
 				exists = true
 				break
@@ -79,11 +79,11 @@ function AddDevice(name)
 		end
 
 		if not exists then
-			redbundles[#redbundles + 1] = name
+			table.insert(attached["redbundles"],name)
 		end
-	elseif type == "immibis_redlogic_wire_insulated" or type == "immibis_redlogic_wire_redalloy" then
-		for x=1,#redwires,1 do
-		   item = redwires[x]
+	elseif pType == "immibis_redlogic_wire_insulated" or pType == "immibis_redlogic_wire_redalloy" then
+		for x=1,#attached["redwires"],1 do
+		   item = attached["redwires"][x]
 		   if item == name then
 				exists = true
 				break
@@ -91,11 +91,11 @@ function AddDevice(name)
 		end
 
 		if not exists then
-			redwires[#redwires + 1] = name
+			table.insert(attached["redwires"],name)
 		end
-	elseif type == "batbox" or type == "mfe" or type == "mfsu" then
-		for x=1,#batteries,1 do
-		   item = batteries[x]
+	elseif pType == "batbox" or pType == "mfe" or pType == "mfsu" then
+		for x=1,#attached["batteries"],1 do
+		   item = attached["batteries"][x]
 		   if item == name then
 				exists = true
 				break
@@ -103,62 +103,43 @@ function AddDevice(name)
 		end
 
 		if not exists then
-			batteries[#batteries + 1] = name
+			table.insert(attached["batteries"],name)
 		end
-	elseif type == "nuclear_reactor" and reactor == nil then
-		reactor = peripheral.wrap(name)
-	elseif type == "me_interface" and storage == nil then
-		storage = peripheral.wrap(name)
+	elseif pType == "nuclear_reactor" then
+		for x=1,#attached["reactors"],1 do
+		   item = attached["reactors"][x]
+		   if item == name then
+				exists = true
+				break
+			end
+		end
+
+		if not exists then
+			table.insert(attached["reactors"],name)
+		end
+	elseif pType == "me_interface" then
+		for x=1,#attached["storage"],1 do
+		   item = attached["storage"][x]
+		   if item == name then
+				exists = true
+				break
+			end
+		end
+
+		if not exists then
+			table.insert(attached["storage"],name)
+		end
 	end
 end
 
 function RemoveDevice(name)
-	type = peripheral.getType(name)
-
-	if type == "monitor" then
-		for x=1,#monitors,1 do
-		   item = monitors[x]
+	for pType in pairs(attached) do
+		for x=1,#attached[pType],1 do
+		   item = attached[pType][x]
 		   if item == name then
-    			monitors.remove(x)
+    			table.remove(attached[pType],x)
 				break
 			end
 		end
-		print("Monitors: "..monitors.maxn())
-	elseif type == "glassesbridge" then
-		for x=1,#bridges,1 do
-		   item = bridges[x]
-		   if item == name then
-				bridges.remove(x)
-				break
-			end
-		end
-	elseif type == "immibis_redlogic_wire_bundled" then
-		for x=1,#redbundles,1 do
-		   item = redbundles[x]
-		   if item == name then
-				redbundles.remove(x)
-				break
-			end
-		end
-	elseif type == "immibis_redlogic_wire_insulated" or type == "immibis_redlogic_wire_redalloy" then
-		for x=1,#redwires,1 do
-		   item = redwires[x]
-		   if item == name then
-				redwires.remove(x)
-				break
-			end
-		end
-	elseif type == "batbox" or type == "mfe" or type == "mfsu" then
-		for x=1,#batteries,1 do
-		   item = batteries[x]
-		   if item == name then
-				batteries.remove(x)
-				break
-			end
-		end
-	elseif type == "nuclear_reactor" then
-		reactor = nil
-	elseif type == "me_interface" then
-		storage = nil
 	end
 end
