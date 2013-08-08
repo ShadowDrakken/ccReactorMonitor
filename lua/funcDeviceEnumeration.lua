@@ -41,6 +41,9 @@ function BuildDeviceList()
 	for name,value in pairs(devices) do
 		AddDevice(value)
 	end
+	
+	print("Device Scan Complete. Starting Reactor Monitor.")
+	print()
 end
 
 function AddDevice(name)

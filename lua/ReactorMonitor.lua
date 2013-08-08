@@ -3,6 +3,7 @@ dofile "funcDisplay.lua"
 dofile "funcBattery.lua"
 dofile "funcRedstone.lua"
 dofile "funcReactor.lua"
+dofile "funcMenus.lua"
 dofile "funcEvent.lua"
 
 booting = true
@@ -13,39 +14,15 @@ term.clear()
 BuildDeviceList()
 ResetDisplays()
 
-if #attached["reactors"] == 0 then
-	DisplayInfo("Reactor: [!] MISSING [!]")
-else
-	local slot = GetFirstComponentSlot(attached["reactors"][1])
-	if slot == nil then
-	   DisplayInfo("Reactor: [!] EMPTY [!]")
-	else
-		DisplayInfo("Reactor: Ok")
-	end
-end
-
-DisplayInfo("Storage: " .. #attached["storage"])
-DisplayInfo("Batteries: " .. #attached["batteries"])
-DisplayInfo("Monitors: " .. #attached["monitors"])
-DisplayInfo("Bridges: " .. #attached["bridges"])
-DisplayInfo("Control Wires: " .. #attached["redwires"])
-
 STATUS_OUTPUT = 1
 STATUS_TEMP = 2
 STATUS_EU = 4
 STATUS_EUPERCENT = 5
 
-breederSlots = GetBreederSlots()
-fuelSlots = GetFuelSlots()
-
 local overheat = false
 
 function main()
-	DisplaySkipLine()
-	DisplayInfo("Device Scan Complete. Starting Reactor Monitor.")
-	DisplaySkipLine()
-	DisplayInfo("[S]hutdown  [C]onfigure  [R]eboot")
-
+	ShowMenuMain()
 	booting = false
 	
 	repeat
