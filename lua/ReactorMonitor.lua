@@ -38,12 +38,7 @@ else
 	end
 end
 
-if #attached["storage"] == 0 then
-	DisplayInfo("ME Interface: [!] MISSING [!]")
-else
-	DisplayInfo("ME Interface: Ok")
-end
-
+DisplayInfo("Storage: " .. #attached["storage"])
 DisplayInfo("Batteries: " .. #attached["batteries"])
 DisplayInfo("Monitors: " .. #attached["monitors"])
 DisplayInfo("Bridges: " .. #attached["bridges"])
@@ -62,6 +57,8 @@ local overheat = false
 function main()
 	DisplaySkipLine()
 	DisplayInfo("Device Scan Complete. Starting Reactor Monitor.")
+	DisplaySkipLine()
+	DisplayInfo("[S]hutdown  [C]onfigure  [R]eboot")
 
 	booting = false
 	

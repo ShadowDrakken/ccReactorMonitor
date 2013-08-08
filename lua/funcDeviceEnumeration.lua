@@ -119,7 +119,17 @@ function AddDevice(name)
 		if not exists then
 			table.insert(attached["reactors"],name)
 		end
-	elseif pType == "me_interface" then
+	elseif pType == "container_chest"
+		or pType == "copper"
+		or pType == "iron"
+		or pType == "silver"
+		or pType == "gold"
+		or pType == "diamond"
+		or pType == "crystal"
+		or pType == "obsidian"
+		or pType == "ender_chest"
+		or pType == "me_interface"
+		then
 		for x=1,#attached["storage"],1 do
 		   item = attached["storage"][x]
 		   if item == name then
