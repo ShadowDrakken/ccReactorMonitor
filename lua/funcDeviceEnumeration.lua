@@ -43,7 +43,7 @@ function BuildDeviceList()
 	end
 	
 	print("Device Scan Complete. Starting Reactor Monitor.")
-	print()
+	sleep(0.5)
 end
 
 function AddDevice(name)
