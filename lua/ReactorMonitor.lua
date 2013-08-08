@@ -1,17 +1,3 @@
--- This program is designed to work with a single Reactor and single
---   ME Interface only.
--- Multiple batteries can be used, however the program will simply total up the
---   current/max capacities for determining when to turn the reactor on/off.
--- The ME Interface block MUST be _below_ the Reactor block that has the modem
---   attached, this is a design limitation intended to utilize empty space
---   created by the shape of a full 6 chamber reactor. I plan to attempt auto-
---   detection in the future.
--- DO NOT change the internal layout of a reactor while this program is running.
---   the program takes inventory when it first starts up and does not rescan
---   while running. The reactor scan takes a few seconds which could cause lag
---   if it constantly rescanned.
--- I recommend using an AND gate and a lever to create a master power switch.
-
 dofile "funcDeviceEnumeration.lua"
 dofile "funcDisplay.lua"
 dofile "funcBattery.lua"
