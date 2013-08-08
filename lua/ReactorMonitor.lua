@@ -10,7 +10,7 @@ booting = true
 disconnected = true
 terminate = false
 
-term.clear()
+clear()
 BuildDeviceList()
 ResetDisplays()
 
@@ -22,7 +22,7 @@ STATUS_EUPERCENT = 5
 local overheat = false
 
 function main()
-	ShowMenuMain()
+	DoMenuMain()
 	booting = false
 	
 	repeat
