@@ -1,3 +1,4 @@
+attached = {}
 attached["bridges"] = {}
 attached["monitors"] = {}
 attached["batteries"] = {}
@@ -13,6 +14,7 @@ meters = {}
 indicators = {}
 
 function ClearDeviceList()
+	attached = {}
 	attached["bridges"] = {}
 	attached["monitors"] = {}
 	attached["batteries"] = {}
