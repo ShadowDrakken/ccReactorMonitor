@@ -6,18 +6,18 @@ STATUS_WARNING = 3
 STATUS_CRITICAL = 4
 
 function ResetDisplays()
-	if #monitors > 0 then
-		for x=1,#monitors,1 do
-			monitor = peripheral.wrap(monitors[x])
+	if #attached["monitors"] > 0 then
+		for x=1,#attached["monitors"],1 do
+			monitor = peripheral.wrap(attached["monitors"][x])
 			if monitor then
 				monitor.clear()
 			end
 		end
 	end
 
-	if #bridges > 0 then
-		for x=1,#bridges,1 do
-			bridge = peripheral.wrap(bridges[x])
+	if #attached["bridges"] > 0 then
+		for x=1,#attached["bridges"],1 do
+			bridge = peripheral.wrap(attached["bridges"][x])
 			if bridge then
 				bridge.clear()
 			end
@@ -37,9 +37,9 @@ function DisplayInfo(text, line)
 
 	line = line or displayLine
 
-	if #monitors > 0 then
-		for x=1,#monitors,1 do
-			monitor = peripheral.wrap(monitors[x])
+	if #attached["monitors"] > 0 then
+		for x=1,#attached["monitors"],1 do
+			monitor = peripheral.wrap(attached["monitors"][x])
 			if monitor then
 				monitor.setCursorPos(1,line)
 				monitor.clearLine()
@@ -48,9 +48,9 @@ function DisplayInfo(text, line)
 		end
 	end
 
-	if #bridges > 0 then
-		for x=1,#bridges,1 do
-			bridge = peripheral.wrap(bridges[x])
+	if #attached["bridges"] > 0 then
+		for x=1,#attached["bridges"],1 do
+			bridge = peripheral.wrap(attached["bridges"][x])
 
 			if bridge then
 				if bridgeText[x] == nil then
@@ -67,7 +67,7 @@ function DisplayInfo(text, line)
 		end
 	end
 
-	if (#monitors==0 and #bridges==0) or booting then
+	if (#attached["monitors"]==0 and #attached["bridges"]==0) or booting then
 		print(text)
  	end
 end
@@ -78,10 +78,10 @@ function DisplaySkipLine()
 end
 
 function MeterAdd(name, line, color)
-	if #bridges > 0 then
+	if #attached["bridges"] > 0 then
 		meters[name] = {}
-		for x=1,#bridges,1 do
-			bridge = peripheral.wrap(bridges[x])
+		for x=1,#attached["bridges"],1 do
+			bridge = peripheral.wrap(attached["bridges"][x])
 			if bridge then
 			   meters[name][x] = {}
 				meters[name][x]["back"] = bridge.addBox(6,(5*line)-1,2,10,color,0.75)
@@ -92,8 +92,8 @@ function MeterAdd(name, line, color)
 end
 
 function MeterUpdate(name, percent)
-	if #bridges > 0 then
-		for x=1,#bridges,1 do
+	if #attached["bridges"] > 0 then
+		for x=1,#attached["bridges"],1 do
 			if meters[name][x] then
 				meters[name][x]["fore"].setHeight(10-(percent/10))
 				meters[name][x]["back"].setHeight(10 - meters[name][x]["fore"].getHeight())
@@ -104,8 +104,8 @@ function MeterUpdate(name, percent)
 end
 
 function MeterColor(name, color)
-	if #bridges > 0 then
-		for x=1,#bridges,1 do
+	if #attached["bridges"] > 0 then
+		for x=1,#attached["bridges"],1 do
 			if meters[name][x] then
 				meters[name][x]["back"].setColor(color)
 			end
@@ -120,10 +120,10 @@ function MeterRemove(name)
 end
 
 function IndicatorAdd(name, line)
-	if #bridges > 0 then
+	if #attached["bridges"] > 0 then
 		indicators[name] = {}
-		for x=1,#bridges,1 do
-			bridge = peripheral.wrap(bridges[x])
+		for x=1,#attached["bridges"],1 do
+			bridge = peripheral.wrap(attached["bridges"][x])
 			if bridge then
 				indicators[name][x] = bridge.addBox(1,(5*line),3,3,0xFFFFFF,0.75)
 			end
@@ -132,8 +132,8 @@ function IndicatorAdd(name, line)
 end
 
 function IndicatorUpdate(name, state)
-	if #bridges > 0 then
-		for x=1,#bridges,1 do
+	if #attached["bridges"] > 0 then
+		for x=1,#attached["bridges"],1 do
 			if indicators[name][x] then
 				if state == STATUS_IDLE then
 					indicators[name][x].setColor(0x0080FF)

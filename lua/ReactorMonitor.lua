@@ -1,22 +1,9 @@
--- This program is designed to work with a single Reactor and single
---   ME Interface only.
--- Multiple batteries can be used, however the program will simply total up the
---   current/max capacities for determining when to turn the reactor on/off.
--- The ME Interface block MUST be _below_ the Reactor block that has the modem
---   attached, this is a design limitation intended to utilize empty space
---   created by the shape of a full 6 chamber reactor. I plan to attempt auto-
---   detection in the future.
--- DO NOT change the internal layout of a reactor while this program is running.
---   the program takes inventory when it first starts up and does not rescan
---   while running. The reactor scan takes a few seconds which could cause lag
---   if it constantly rescanned.
--- I recommend using an AND gate and a lever to create a master power switch.
-
 dofile "funcDeviceEnumeration.lua"
 dofile "funcDisplay.lua"
 dofile "funcBattery.lua"
 dofile "funcRedstone.lua"
 dofile "funcReactor.lua"
+dofile "funcMenus.lua"
 dofile "funcEvent.lua"
 
 booting = true
@@ -27,47 +14,21 @@ term.clear()
 BuildDeviceList()
 ResetDisplays()
 
-if reactor == nil then
-	DisplayInfo("Reactor: [!] MISSING [!]")
-else
-	local slot = GetFirstComponentSlot()
-	if slot == nil then
-	   DisplayInfo("Reactor: [!] EMPTY [!]")
-	else
-		DisplayInfo("Reactor: Ok")
-	end
-end
-
-if storage == nil then
-	DisplayInfo("ME Interface: [!] MISSING [!]")
-else
-	DisplayInfo("ME Interface: Ok")
-end
-
-DisplayInfo("Batteries: " .. #batteries)
-DisplayInfo("Monitors: " .. #monitors)
-DisplayInfo("Bridges: " .. #bridges)
-DisplayInfo("Control Wires: " .. #redwires)
-
 STATUS_OUTPUT = 1
 STATUS_TEMP = 2
 STATUS_EU = 4
 STATUS_EUPERCENT = 5
 
-breederSlots = GetBreederSlots()
-fuelSlots = GetFuelSlots()
-
 local overheat = false
 
 function main()
-	DisplaySkipLine()
-	DisplayInfo("Device Scan Complete. Starting Reactor Monitor.")
-
+	ShowMenuMain()
 	booting = false
 	
 	repeat
 		if terminate then
 			RedstoneOutput(false)
+			RedbundleOutput(colors.black, false)
 			ResetDisplays()
 
 			DisplayInfo("-- Monitor Offline --",1)
@@ -87,13 +48,15 @@ function main()
 			disconnected = false
 		end
 
-		if (reactor == nil) or (not reactor.isActive()) then
+		if (#attached["reactors"] == 0) then
 			disconnected = true
 
 		   RedstoneOutput(false)
+			RedbundleOutput(colors.black, false)
 		   ResetDisplays()
 			DisplayInfo("-- Reactor Offline --")
 		else
+		   reactor = peripheral.wrap(attached["reactors"][1])
 			curOutput = reactor.getEUOutput()
 			maxOutput = reactor.getMaxEUOutput()
 
@@ -142,13 +105,16 @@ function main()
 		   if overheat == true then
 				IndicatorUpdate("Status",STATUS_WARNING)
 				RedstoneOutput(false)
+				RedbundleOutput(colors.black, false)
 			else
 				if curEU/maxEU >= 1 then
 					IndicatorUpdate("Status",STATUS_OFF)
 					RedstoneOutput(false)
-				elseif curEU/maxEU <= 0.5 then
+					RedbundleOutput(colors.black, false)
+			elseif curEU/maxEU <= 0.5 then
 					IndicatorUpdate("Status",STATUS_OK)
 					RedstoneOutput(true)
+					RedbundleOutput(colors.black, true)
 				end
 			end
 		end
